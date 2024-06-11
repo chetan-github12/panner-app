@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paneer Quality Analysis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            text-align: center;
+        }
+        input, button, select {
+            width: 300px;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        input:focus, button:focus, select:focus {
+            outline: none;
+            border-color: #9ecaed;
+            box-shadow: 0 0 10px #9ecaed;
+        }
+        button {
+            cursor: pointer;
+            background-color: #f85032;
+            background-image: linear-gradient(to right, #f85032, #e73827);
+            color: white;
+            border: none;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        button:hover {
+            background-image: linear-gradient(to right, #f9d423, #ff4e50);
+        }
+        #result, #tsResult {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Paneer Quality Analysis</h1>
+    
+    <h2>Microbial Test Section</h2>
+    <ul>
+        <li>
+            <label for="batchNumber">Batch Number:</label>
+            <input type="text" id="batchNumber">
+        </li>
+        <li>
+            <label for="batchWeight">Batch Weight:</label>
+            <input type="number" id="batchWeight">
+        </li>
+        <li>
+            <label for="testDate">Test Date:</label>
+            <input type="date" id="testDate">
+        </li>
+        <li>
+            <label for="spc">SPC (cfu/g):</label>
+            <input type="text" id="spc">
+        </li>
+        <li>
+            <label for="coliform">Coliform (cfu/g):</label>
+            <input type="text" id="coliform">
+        </li>
+        <li>
+            <button onclick="logTestData()">Log Test Data</button>
+        </li>
+        <li id="result"></li>
+    </ul>
+
+    <h2>TS Calculation and Quality Details Section</h2>
+    <ul>
+        <li>
+            <label for="paneerType">Type of Paneer:</label>
+            <select id="paneerType">
+              <option value="soft">Soft</option>
+              <option value="firm">Firm</option>
+              <option value="aged">Aged</option>
+            </select>
+          </li>
+        
+        <li>
+            <label for="fat">Fat (%):</label>
+            <input type="text" id="fat">
+        </li>
+        <li>
+            <label for="snf">SNF (%):</label>
+            <input type="text" id="snf">
+        </li>
+        <li>
+            <label for="fdm">FDM (%):</label>
+            <input type="text" id="fdm">
+        </li>
+        <li>
+            <label for="mois">Moisture (%):</label>
+            <input type="text" id="mois">
+        </li>
+        <li>
+            <label for="acidity">Acidity (%):</label>
+            <input type="text" id="acidity">
+        </li>
+        <li>
+            <label for="w1">Weight W1 (g):</label>
+            <input type="number" id="w1">
+        </li>
+        <li>
+            <label for="w2">Weight W2 (g):</label>
+            <input type="number" id="w2">
+        </li>
+        <li>
+            <label for="w3">Weight W3 (g):</label>
+            <input type="number" id="w3">
+        </li>
+        <li>
+            <button onclick="calculateTS()">Calculate TS</button>
+        </li>
+        <li id="tsResult"></li>
+    </ul>
+    
+    <script>
+        function logTestData() {
+            let batchNumber = document.getElementById('batchNumber').value.trim();
+            let batchWeight = parseFloat(document.getElementById('batchWeight').value);
+            let testDate = document.getElementById('testDate').value;
+            let spc = document.getElementById('spc').value.trim();
+            let coliform = document.getElementById('coliform').value.trim();
+
+            if (!batchNumber || !batchWeight || !testDate || !spc || !coliform) {
+                document.getElementById('result').innerHTML = 'Please fill in all fields with valid data.';
+                return;
+            }
+
+            let resultText = `Batch Number: ${batchNumber}<br>
+                              Batch Weight: ${batchWeight} g<br>
+                              Test Date: ${testDate}<br>
+                              SPC: ${spc} cfu/g<br>
+                              Coliform: ${coliform} cfu/g`;
+
+            document.getElementById('result').innerHTML = resultText;
+        }
+
+        function calculateTS() {
+            let paneer = document.getElementById('paneer').value.trim();
+            let fat = document.getElementById('fat').value.trim();
+            let snf = document.getElementById('snf').value.trim();
+            let fdm = document.getElementById('fdm').value.trim();
+            let mois = document.getElementById('mois').value.trim();
+            let acidity = document.getElementById('acidity').value.trim();
+            let w1 = parseFloat(document.getElementById('w1').value);
+            let w2 = parseFloat(document.getElementById('w2').value);
+            let w3 = parseFloat(document.getElementById('w3').value);
+
+            if (isNaN(w1) || isNaN(w2) || isNaN(w3)) {
+                document.getElementById('tsResult').innerHTML = 'Please enter valid numbers for all weights.';
+                return;
+            }
+
+            let ts = (w3 - w1) / w2;
+            let resultText = `<strong>TS Result:</strong> ${ts.toFixed(3)}<br>
+                              Paneer Type: ${paneer}<br>
+                              Fat: ${fat} %<br>
+                              SNF: ${snf} %<br>
+                              FDM: ${fdm} %<br>
+                              Moisture: ${mois} %<br>
+                              Acidity: ${acidity} %`;
+
+            document.getElementById('tsResult').innerHTML = resultText;
+        }
+    </script>
+</body>
+</html>
